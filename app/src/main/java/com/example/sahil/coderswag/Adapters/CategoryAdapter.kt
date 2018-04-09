@@ -18,22 +18,29 @@ class CategoryAdapter(context:Context,categories:List<Category>):BaseAdapter() {
         val categories=categories
 
     @SuppressLint("ViewHolder")
+
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
             val categoryView:View
-            categoryView=LayoutInflater.from(context).inflate(R.layout.list_view_category,null)
-            val categoryImage:ImageView=categoryView.findViewById(R.id.categoryImage)
-            val categoryText:TextView=categoryView.findViewById(R.id.categoryText)
+            val holder:ViewHolder
 
+        if(convertView==null){
+            categoryView= LayoutInflater.from(context).inflate(R.layout.list_view_category,null)
+            holder=ViewHolder()
+            holder.categoryImage=categoryView.findViewById(R.id.categoryImage)
+            holder.categoryName=categoryView.findViewById(R.id.categoryText)
+            categoryView.tag=holder
+        }else{
+            holder=convertView.tag as ViewHolder
+            categoryView=convertView
+            categoryView.tag=holder
+        }
+
+        println("Heavy Computing")
         val category=categories[position]
-
         val resourceId=context.resources.getIdentifier(category.image,"drawable",context.packageName)
-        categoryImage.setImageResource(resourceId)
-        println(resourceId)
-
-        categoryText.text=category.title
-
-
-
+        holder.categoryImage?.setImageResource(resourceId)
+        print("\t"+resourceId)
+        holder.categoryName?.text=category.title
         return categoryView
     }
 
@@ -47,4 +54,8 @@ class CategoryAdapter(context:Context,categories:List<Category>):BaseAdapter() {
 
     override fun getCount(): Int {
         return categories.count()}
+    class ViewHolder(){
+        var categoryName:TextView?= null
+        var categoryImage:ImageView?=null
+    }
 }
